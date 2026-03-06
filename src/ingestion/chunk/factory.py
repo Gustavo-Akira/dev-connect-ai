@@ -6,6 +6,7 @@ from ingestion.chunk.go import GoChunker
 from ingestion.chunk.java import JavaChunker
 from ingestion.chunk.markdown import MarkDowmnChunker
 from ingestion.chunk.react import ReactChunker
+from ingestion.chunk.yaml import YAMLChunker
 
 
 class ChunkerFactory:
@@ -15,6 +16,7 @@ class ChunkerFactory:
             GoChunker(),
             MarkDowmnChunker(),
             ReactChunker(),
+            YAMLChunker()
         ]
         
     def get_chunker(self, path: Path) -> Chunker:
