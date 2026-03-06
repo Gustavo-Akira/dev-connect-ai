@@ -2,9 +2,9 @@ import re
 
 from pathlib import Path
 
-from ingestion.chunk.base import BaseChunker
+from ingestion.chunk.base import Chunker
 
-class GoChunker(BaseChunker):
+class GoChunker(Chunker):
     FUNC_PATTERN = re.compile(r'\nfunc\s+\(?.*\)?\s*\w+\(')
     
     def supports(self, file_path: Path) -> bool:

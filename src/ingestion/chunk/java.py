@@ -1,11 +1,12 @@
 
 import re
 
-from base import BaseChunker
 from pathlib import Path
 
+from ingestion.chunk.base import Chunker
 
-class JavaChunker(BaseChunker):
+
+class JavaChunker(Chunker):
     def chunk(self, path: Path, content: str) -> list[str]:
         chunks = []
         class_patterns = re.compile(r'\bclass\s+(\w+)')
