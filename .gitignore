@@ -2,3 +2,5 @@
 repositories
 
 __pycache__
+
+.env

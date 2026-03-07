@@ -1,5 +1,8 @@
 from ingestion.sync.models import SyncConfig
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
 GITHUB_REPOS = [
     SyncConfig(
@@ -33,3 +36,9 @@ GITHUB_REPOS = [
         repo_type="backend"
     )
 ]
+
+QDRANT_HOST=os.getenv("QDRANT_HOST", "localhost")
+QDRANT_PORT=int(os.getenv("QDRANT_PORT", "6333"))
+QDRANT_COLLECTION_NAME=os.getenv("QDRANT_COLLECTION_NAME", "devconnect")
+
+EMBEDDING_MODEL=os.getenv("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
