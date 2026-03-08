@@ -13,8 +13,8 @@ class QueryService:
         self.embedding_service = embedding_service
 
     def query(self, query_text):
-        query_vector = self.embedding_service.embed(query_text)
-        results = self.vector_store.search(query_vector, top_k=5)
+        query_vector = self.embedding_service.embed_batch([query_text])
+        results = self.vector_store.search(query_vector[0], top_k=5)
 
         context = self.context_builder.build_context(results)
         answer = self.llm.generate_response(query_text, context)
