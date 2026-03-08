@@ -42,3 +42,5 @@ QDRANT_PORT=int(os.getenv("QDRANT_PORT", "6333"))
 QDRANT_COLLECTION_NAME=os.getenv("QDRANT_COLLECTION_NAME", "devconnect")
 
 EMBEDDING_MODEL=os.getenv("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
+
+CONTEXT_MAX_SIZE=int(os.getenv("CONTEXT_MAX_SIZE", "2048"))
