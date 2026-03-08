@@ -1,9 +1,9 @@
 
 
-from vectorstore.model import VectorRecord
+from vectorstore.model import SearchResult, VectorRecord
 from vectorstore.store import VectorStore
 from qdrant_client import QdrantClient
-from qdrant_client.models import Distance, PointStruct, VectorParams
+from qdrant_client.models import Distance, PointStruct, QueryResponse, VectorParams
 from app.config import QDRANT_HOST, QDRANT_PORT, QDRANT_COLLECTION_NAME, EMBEDDING_MODEL
 
 class QdrantVectorStore(VectorStore):
@@ -38,18 +38,19 @@ class QdrantVectorStore(VectorStore):
         self,
         query_vector: list[float],
         top_k: int = 5
-    ) -> list[VectorRecord]:
+    ) -> list[SearchResult]:
         search_result = self.client.query_points(
             collection_name=self.collection_name,
             query=query_vector,
             limit=top_k
         )
-        results: list[VectorRecord] = []
-        for result in search_result:
-            record = VectorRecord(
+        results: list[SearchResult] = []
+        for result in search_result.points:
+            record = SearchResult(
                 id=result.id,
-                vector=result.vector,
-                metadata=result.payload
+                metadata=result.payload,
+                score=result.score,
+                text=result.payload.get("text", "")
             )
             results.append(record)
         return results

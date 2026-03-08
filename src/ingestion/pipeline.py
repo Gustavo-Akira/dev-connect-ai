@@ -1,4 +1,5 @@
 from pathlib import Path
+import uuid
 
 from embeddings.service import EmbeddingService
 from ingestion.chunk.chunk_builder import ChunkBuilder
@@ -28,7 +29,7 @@ def run_ingestion(repo_name: str, local_path: Path, commit_hash: str):
             records: list[VectorRecord] = []
             for i, chunk in enumerate(chunks):
                 record = VectorRecord(
-                    id=i,
+                    id=uuid.uuid5(uuid.NAMESPACE_DNS, f"{file_path}_{i}"),
                     vector=vectors[i],
                     metadata={
                         "repo": repo_name,
