@@ -19,7 +19,7 @@ class QueryService:
         context = self.context_builder.build_context(results)
         answer = self.llm.generate_response(query_text, context)
         response = QueryResponse(
-            sources=[result.metadata.get("source", "unknown") for result in results],
+            sources=[result.metadata.get("file_path", "unknown") for result in results],
             response=answer
         )
         return response
