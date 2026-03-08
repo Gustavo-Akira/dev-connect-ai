@@ -44,3 +44,6 @@ QDRANT_COLLECTION_NAME=os.getenv("QDRANT_COLLECTION_NAME", "devconnect")
 EMBEDDING_MODEL=os.getenv("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
 
 CONTEXT_MAX_SIZE=int(os.getenv("CONTEXT_MAX_SIZE", "2048"))
+
+OPENAI_API_KEY=os.getenv("OPENAI_API_KEY", "")
+OPENAI_MODEL=os.getenv("OPENAI_MODEL", "gpt-4o-mini")
