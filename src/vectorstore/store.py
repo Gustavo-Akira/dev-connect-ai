@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from .model import VectorRecord
+from .model import SearchResult, VectorRecord
 
 
 class VectorStore(ABC):
@@ -9,4 +9,12 @@ class VectorStore(ABC):
         self,
         record: VectorRecord
     ) -> None:
+        pass
+    
+    @abstractmethod
+    def search(
+        self,
+        query_vector: list[float],
+        top_k: int = 5
+    ) -> list[SearchResult]:
         pass

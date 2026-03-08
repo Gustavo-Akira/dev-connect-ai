@@ -32,4 +32,25 @@ class QdrantVectorStore(VectorStore):
         self.client.upsert(
             collection_name=self.collection_name,
             points=points
-        )    
+        )
+        
+    def search(
+        self,
+        query_vector: list[float],
+        top_k: int = 5
+    ) -> list[VectorRecord]:
+        search_result = self.client.query_points(
+            collection_name=self.collection_name,
+            query=query_vector,
+            limit=top_k
+        )
+        results: list[VectorRecord] = []
+        for result in search_result:
+            record = VectorRecord(
+                id=result.id,
+                vector=result.vector,
+                metadata=result.payload
+            )
+            results.append(record)
+        return results
+            
