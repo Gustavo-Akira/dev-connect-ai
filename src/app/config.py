@@ -47,3 +47,7 @@ CONTEXT_MAX_SIZE=int(os.getenv("CONTEXT_MAX_SIZE", "2048"))
 
 OPENAI_API_KEY=os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL=os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+
+LLM_PROVIDER=os.getenv("LLM_PROVIDER", "ollama")
+
+OLLAMA_MODEL=os.getenv("OLLAMA_MODEL", "devconnect")
