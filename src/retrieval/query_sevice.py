@@ -25,3 +25,8 @@ class QueryService:
             completion_tokens=answer.completion_tokens
         )
         return response
+    
+    def search(self, query_text):
+        query_vector = self.embedding_service.embed_batch([query_text])
+        results = self.vector_store.search(query_vector[0], top_k=5)
+        return [result.metadata.get("file_path", "unknown") for result in results]
