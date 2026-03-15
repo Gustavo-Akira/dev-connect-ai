@@ -18,20 +18,51 @@ class OllamaClient(LLMClient):
             Question: {query}
             Answer:
         """
-        response = requests.post(
-            f"{self.base_url}/api/chat",
-            json={"model": self.model_name, "messages": [{"role": "user", "content": prompt.format(context=context, query=query)}]},
-        )
-        answer = ""
+        try:
+            response = requests.post(
+                f"{self.base_url}/api/chat",
+                json={"model": self.model_name, "messages": [{"role": "user", "content": prompt.format(context=context, query=query)}]},
+                stream=True,
+            )
+        except requests.RequestException:
+            return QueryResult(response="", prompt_tokens=0, completion_tokens=0)
 
-        for line in response.iter_lines():
-            if line:
+        answer = ""
+        prompt_tokens = 0
+        completion_tokens = 0
+
+        for line in response.iter_lines(decode_unicode=True):
+            if not line:
+                continue
+            try:
                 data = json.loads(line)
-            if "message" in data:
-                answer += data["message"]["content"]
+            except (ValueError, json.JSONDecodeError):
+                continue
+
+            if not isinstance(data, dict):
+                continue
+
+            msg = data.get("message")
+            if isinstance(msg, dict):
+                content = msg.get("content")
+                if isinstance(content, str):
+                    answer += content
+
+            p = data.get("prompt_eval_count")
+            e = data.get("eval_count")
+            try:
+                if p is not None:
+                    prompt_tokens = int(p)
+            except (TypeError, ValueError):
+                pass
+            try:
+                if e is not None:
+                    completion_tokens = int(e)
+            except (TypeError, ValueError):
+                pass
 
         return QueryResult(
             response=answer.strip(),
-            prompt_tokens=0,
-            completion_tokens=0
+            prompt_tokens=prompt_tokens,
+            completion_tokens=completion_tokens
         )
