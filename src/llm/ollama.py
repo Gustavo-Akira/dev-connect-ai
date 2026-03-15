@@ -1,6 +1,8 @@
 import json
 
 import requests
+
+from llm.models import QueryResult
 from .client import LLMClient
 
 class OllamaClient(LLMClient):
@@ -8,7 +10,7 @@ class OllamaClient(LLMClient):
         self.model_name = model_name
         self.base_url = "http://localhost:11434"
 
-    def generate_response(self, query: str,context: str) -> str:
+    def generate_response(self, query: str,context: str) -> QueryResult:
         prompt = """
             You are an assistant helping developers understand a codebase.
             Use the following context to answer the question. If the context does not contain the answer, say you don't know.
@@ -28,4 +30,8 @@ class OllamaClient(LLMClient):
             if "message" in data:
                 answer += data["message"]["content"]
 
-        return answer
+        return QueryResult(
+            response=answer.strip(),
+            prompt_tokens=0,
+            completion_tokens=0
+        )

@@ -18,4 +18,4 @@ query_service = QueryService(vector_store, llm_client, context_builder=context_b
 @router.post("/query", response_model=QueryResponse)
 async def query(request: QueryRequest):
     response = query_service.query(request.question)
-    return QueryResponse(answer=response.response, sources=response.sources)
+    return QueryResponse(answer=response.response, sources=response.sources, completion_tokens=response.completion_tokens, prompt_tokens=response.prompt_tokens)

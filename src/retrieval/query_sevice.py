@@ -20,6 +20,8 @@ class QueryService:
         answer = self.llm.generate_response(query_text, context)
         response = QueryResponse(
             sources=[result.metadata.get("file_path", "unknown") for result in results],
-            response=answer
+            response=answer.response,
+            prompt_tokens=answer.prompt_tokens,
+            completion_tokens=answer.completion_tokens
         )
         return response
