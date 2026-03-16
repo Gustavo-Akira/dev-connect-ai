@@ -1,7 +1,7 @@
 from embeddings.service import EmbeddingService
 from llm.client import LLMClient
 from retrieval.context_builder import ContextBuilder
-from retrieval.models import QueryResponse
+from retrieval.models import QueryResponse, SearchResponse, SearchResult
 from vectorstore.store import VectorStore
 
 
@@ -29,4 +29,4 @@ class QueryService:
     def search(self, query_text):
         query_vector = self.embedding_service.embed_batch([query_text])
         results = self.vector_store.search(query_vector[0], top_k=5)
-        return [result.metadata.get("file_path", "unknown") for result in results]
+        return SearchResponse(sources=[SearchResult(file_path=result.metadata.get("file_path", "unknown"), score=result.score) for result in results])
