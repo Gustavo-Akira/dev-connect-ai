@@ -4,6 +4,7 @@ import requests
 
 from llm.models import QueryResult
 from .client import LLMClient
+from ollama import chat
 
 class OllamaClient(LLMClient):
     def __init__(self, model_name: str):
@@ -19,9 +20,9 @@ class OllamaClient(LLMClient):
             Answer:
         """
         try:
-            response = requests.post(
-                f"{self.base_url}/api/chat",
-                json={"model": self.model_name, "messages": [{"role": "user", "content": prompt.format(context=context, query=query)}]},
+            response = chat(
+                model=self.model_name,
+                messages=[{"role": "user", "content": prompt.format(context=context, query=query)}],
                 stream=True,
             )
         except requests.RequestException:
@@ -31,35 +32,11 @@ class OllamaClient(LLMClient):
         prompt_tokens = 0
         completion_tokens = 0
 
-        for line in response.iter_lines(decode_unicode=True):
-            if not line:
-                continue
-            try:
-                data = json.loads(line)
-            except (ValueError, json.JSONDecodeError):
-                continue
-
-            if not isinstance(data, dict):
-                continue
-
-            msg = data.get("message")
-            if isinstance(msg, dict):
-                content = msg.get("content")
-                if isinstance(content, str):
-                    answer += content
-
-            p = data.get("prompt_eval_count")
-            e = data.get("eval_count")
-            try:
-                if p is not None:
-                    prompt_tokens = int(p)
-            except (TypeError, ValueError):
-                pass
-            try:
-                if e is not None:
-                    completion_tokens = int(e)
-            except (TypeError, ValueError):
-                pass
+        for line in response:
+            msg = line.message.content
+            answer += msg
+            prompt_tokens = line.prompt_eval_count
+            completion_tokens = line.eval_count
 
         return QueryResult(
             response=answer.strip(),
